@@ -179,3 +179,22 @@ void Quad::countNodes(int& count) {
     if (botRightTree != nullptr)
         botRightTree->countNodes(count);
 }
+
+void Quad::insert(Point p, int data) {
+    Node* newNode = new Node(p, data);
+    insert(newNode);
+}
+
+void Quad::list(std::list<Node*>& nodeList) { //recorrido preorden
+    if (n != nullptr)
+        nodeList.push_back(n);
+
+    if (topLeftTree != nullptr)
+        topLeftTree->list(nodeList);
+    if (topRightTree != nullptr)
+        topRightTree->list(nodeList);
+    if (botLeftTree != nullptr)
+        botLeftTree->list(nodeList);
+    if (botRightTree != nullptr)
+        botRightTree->list(nodeList);
+}
