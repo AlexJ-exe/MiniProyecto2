@@ -1,5 +1,7 @@
 #pragma once
+#include "QuadTreeADT.h"
 #include <iostream>
+
 
 using namespace std;
 
