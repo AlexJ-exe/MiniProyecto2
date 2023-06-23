@@ -42,15 +42,23 @@ int main() {
   cout << "Puntos Totales test 2: "<< plane2D.totalPoints()<<endl;
   cout << "Nodos Totales test 1: "<< plane2D.totalNodes()<<endl;
 
-  
   list<Node*> pointList = plane2D.list();
 
-    // Mostrar los puntos en la lista
-    for (const auto& node : pointList) {
-        Point point = node->pos;
-        int value = node->data;
-        cout << "Point (" << point.x << ", " << point.y << ") - Value: " << value << std::endl;
-    }
+  // Mostrar los puntos en la lista
+  for (const auto& node : pointList) {
+    Point point = node->pos;
+    int value = node->data;
+    cout << "Point (" << point.x << ", " << point.y << ") - Value: " << value << std::endl;
+  }
+
+Point center(1, 1);
+int distance = 2;
+
+int count = plane2D.countRegion(center, distance);
+std::cout << "Number of points in the region: " << count << std::endl;
+
+int aggregate = plane2D.aggregateRegion(center, distance);
+std::cout << "Aggregate value in the region: " << aggregate << std::endl;
 
 
   return 0;

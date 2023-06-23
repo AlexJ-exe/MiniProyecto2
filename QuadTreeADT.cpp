@@ -212,3 +212,58 @@ std::list<Node*> Quad::list() {
 
     return nodeList;
 }
+
+int Quad::countRegion(Point p, int d) {
+    int count = 0;
+
+    if (!inBoundary(p))
+        return count;
+
+    if (n != nullptr)
+        count++;
+
+    if (abs(topLeft.x - botRight.x) <= 1 && abs(topLeft.y - botRight.y) <= 1)
+        return count;
+
+    if (topLeftTree != nullptr)
+        count += topLeftTree->countRegion(p, d);
+
+    if (topRightTree != nullptr)
+        count += topRightTree->countRegion(p, d);
+
+    if (botLeftTree != nullptr)
+        count += botLeftTree->countRegion(p, d);
+
+    if (botRightTree != nullptr)
+        count += botRightTree->countRegion(p, d);
+
+    return count;
+}
+
+int Quad::aggregateRegion(Point p, int d) {
+    int aggregate = 0;
+
+    if (!inBoundary(p))
+        return aggregate;
+
+    if (n != nullptr)
+        aggregate += n->data;
+
+    if (abs(topLeft.x - botRight.x) <= 1 && abs(topLeft.y - botRight.y) <= 1)
+        return aggregate;
+
+    if (topLeftTree != nullptr)
+        aggregate += topLeftTree->aggregateRegion(p, d);
+
+    if (topRightTree != nullptr)
+        aggregate += topRightTree->aggregateRegion(p, d);
+
+    if (botLeftTree != nullptr)
+        aggregate += botLeftTree->aggregateRegion(p, d);
+
+    if (botRightTree != nullptr)
+        aggregate += botRightTree->aggregateRegion(p, d);
+
+    return aggregate;
+}
+
