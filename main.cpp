@@ -38,5 +38,11 @@ int main() {
   else cout << "No existe el punto." << endl;
   // Contenido en la coordenada (1,5): No existe el punto.
   
+  //Prueba de metodos requeridos
+
+  //cout << "Puntos Totales v1: "<< plane2D.totalPoints()<<endl;
+  //cout << "Nodos Totales v1: "<< plane2D.totalNodes()<<endl;
+
+
   return 0;
 }
