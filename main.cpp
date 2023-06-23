@@ -1,9 +1,7 @@
 #include "QuadTreeADT.h"
 #include <iostream>
 
-
 using namespace std;
-
 
 int main() {
   Quad plane2D(Point(0, 0), Point(8, 8));
@@ -51,15 +49,14 @@ int main() {
     cout << "Point (" << point.x << ", " << point.y << ") - Value: " << value << std::endl;
   }
 
-Point center(1, 1);
-int distance = 2;
+  Point center(1, 1);
+  int distance = 2;
 
-int count = plane2D.countRegion(center, distance);
-std::cout << "Number of points in the region: " << count << std::endl;
+  int count = plane2D.countRegion(center, distance);
+  std::cout << "Number of points in the region: " << count << std::endl;
 
-int aggregate = plane2D.aggregateRegion(center, distance);
-std::cout << "Aggregate value in the region: " << aggregate << std::endl;
-
+  int aggregate = plane2D.aggregateRegion(center, distance);
+  std::cout << "Aggregate value in the region: " << aggregate << std::endl;
 
   return 0;
 }
