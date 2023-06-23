@@ -140,4 +140,22 @@ bool Quad::inBoundary(Point p) {
 
 //Metodos Requeridos 
 
+int Quad::totalPoints() {
+    int count = 0;
+    countPoints(count);
+    return count;
+}
 
+void Quad::countPoints(int& count) {
+    if (n != nullptr)
+        count++;
+
+    if (topLeftTree != nullptr)
+        topLeftTree->countPoints(count);
+    if (topRightTree != nullptr)
+        topRightTree->countPoints(count);
+    if (botLeftTree != nullptr)
+        botLeftTree->countPoints(count);
+    if (botRightTree != nullptr)
+        botRightTree->countPoints(count);
+}
