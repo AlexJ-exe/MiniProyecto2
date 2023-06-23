@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Node.h"
+#include <list>
 
 class Quad {
     Point topLeft;
@@ -14,7 +15,13 @@ class Quad {
 public:
     Quad();
     Quad(Point topL, Point botR);
-    void insert(Node*);
-    Node* search(Point);
-    bool inBoundary(Point);
+    int totalPoints();
+    int totalNodes();
+    void insert(Point p, int data);
+    void insert(Node* node);
+    std::list<Node*> list();
+    int countRegion(Point p, int d);
+    int aggregateRegion(Point p, int d);
+    Node* search(Point p);
+    bool inBoundary(Point p);
 };
