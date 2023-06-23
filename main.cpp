@@ -1,4 +1,3 @@
-#pragma once
 #include "QuadTreeADT.h"
 #include <iostream>
 
@@ -40,8 +39,8 @@ int main() {
   
   //Prueba de metodos requeridos
 
-  //cout << "Puntos Totales v1: "<< plane2D.totalPoints()<<endl;
-  //cout << "Nodos Totales v1: "<< plane2D.totalNodes()<<endl;
+  cout << "Puntos Totales test 2: "<< plane2D.totalPoints()<<endl;
+  cout << "Nodos Totales test 1: "<< plane2D.totalNodes()<<endl;
 
 
   return 0;

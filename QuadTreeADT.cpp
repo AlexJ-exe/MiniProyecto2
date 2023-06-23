@@ -159,3 +159,23 @@ void Quad::countPoints(int& count) {
     if (botRightTree != nullptr)
         botRightTree->countPoints(count);
 }
+
+int Quad::totalNodes() {
+    int count = 1;
+    countNodes(count);
+    return count;
+}
+
+void Quad::countNodes(int& count) {
+    if (n != nullptr)
+        count++;
+
+    if (topLeftTree != nullptr)
+        topLeftTree->countNodes(count);
+    if (topRightTree != nullptr)
+        topRightTree->countNodes(count);
+    if (botLeftTree != nullptr)
+        botLeftTree->countNodes(count);
+    if (botRightTree != nullptr)
+        botRightTree->countNodes(count);
+}
