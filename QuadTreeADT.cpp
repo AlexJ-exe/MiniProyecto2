@@ -1,5 +1,6 @@
 #include "QuadTreeADT.h"
 #include <cmath>
+//#include <list>
 
 Quad::Quad() {
     topLeft = Point(0, 0);
@@ -185,16 +186,29 @@ void Quad::insert(Point p, int data) {
     insert(newNode);
 }
 
-void Quad::list(std::list<Node*>& nodeList) { //recorrido preorden
-    if (n != nullptr)
-        nodeList.push_back(n);
+std::list<Node*> Quad::list() {
+    std::list<Node*> nodeList;
 
-    if (topLeftTree != nullptr)
-        topLeftTree->list(nodeList);
-    if (topRightTree != nullptr)
-        topRightTree->list(nodeList);
-    if (botLeftTree != nullptr)
-        botLeftTree->list(nodeList);
-    if (botRightTree != nullptr)
-        botRightTree->list(nodeList);
+    if (n != nullptr) {
+        nodeList.push_back(n);
+    }
+
+    if (topLeftTree != nullptr) {
+        std::list<Node*> topLeftList = topLeftTree->list();
+        nodeList.insert(nodeList.end(), topLeftList.begin(), topLeftList.end());
+    }
+    if (topRightTree != nullptr) {
+        std::list<Node*> topRightList = topRightTree->list();
+        nodeList.insert(nodeList.end(), topRightList.begin(), topRightList.end());
+    }
+    if (botLeftTree != nullptr) {
+        std::list<Node*> botLeftList = botLeftTree->list();
+        nodeList.insert(nodeList.end(), botLeftList.begin(), botLeftList.end());
+    }
+    if (botRightTree != nullptr) {
+        std::list<Node*> botRightList = botRightTree->list();
+        nodeList.insert(nodeList.end(), botRightList.begin(), botRightList.end());
+    }
+
+    return nodeList;
 }

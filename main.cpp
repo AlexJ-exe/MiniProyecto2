@@ -42,6 +42,16 @@ int main() {
   cout << "Puntos Totales test 2: "<< plane2D.totalPoints()<<endl;
   cout << "Nodos Totales test 1: "<< plane2D.totalNodes()<<endl;
 
+  
+  list<Node*> pointList = plane2D.list();
+
+    // Mostrar los puntos en la lista
+    for (const auto& node : pointList) {
+        Point point = node->pos;
+        int value = node->data;
+        cout << "Point (" << point.x << ", " << point.y << ") - Value: " << value << std::endl;
+    }
+
 
   return 0;
 }
