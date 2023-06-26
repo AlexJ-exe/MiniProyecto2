@@ -139,18 +139,23 @@ bool Quad::inBoundary(Point p) {
   return (p.x >= topLeft.x && p.x <= botRight.x && p.y >= topLeft.y && p.y <= botRight.y);
 }
 
+//
 //Metodos Requeridos 
+//
 
+// Retorna el número total de puntos almacenados en el Quadtree
 int Quad::totalPoints() {
   int count = 0;
   countPoints(count);
   return count;
 }
 
+// Cuenta recursivamente el número de puntos en el Quadtree
 void Quad::countPoints(int& count) {
   if (n != nullptr)
-    count++;
+    count++; // Incrementa el contador cuando se encuentra un nodo en este cuadrante
 
+  // Realiza un recorrido recursivo en los cuadrantes hijos
   if (topLeftTree != nullptr)
     topLeftTree->countPoints(count);
   if (topRightTree != nullptr)
@@ -161,16 +166,19 @@ void Quad::countPoints(int& count) {
     botRightTree->countPoints(count);
 }
 
+// Retorna el número total de nodos en el Quadtree, incluido el nodo raíz
 int Quad::totalNodes() {
-  int count = 1;
+  int count = 1; // Comienza con 1 para incluir el nodo raíz
   countNodes(count);
   return count;
 }
 
+// Cuenta recursivamente el número de nodos en el Quadtree, incluido el nodo actual
 void Quad::countNodes(int& count) {
   if (n != nullptr)
-    count++;
+    count++; // Incrementa el contador cuando se encuentra un nodo en este cuadrante
 
+  // Realiza un recorrido recursivo en los cuadrantes hijos
   if (topLeftTree != nullptr)
     topLeftTree->countNodes(count);
   if (topRightTree != nullptr)
@@ -181,18 +189,21 @@ void Quad::countNodes(int& count) {
     botRightTree->countNodes(count);
 }
 
+// Inserta un punto y un dato en el Quadtree
 void Quad::insert(Point p, int data) {
   Node* newNode = new Node(p, data);
   insert(newNode);
 }
 
+// Retorna una lista que contiene todos los nodos almacenados en el Quadtree
 std::list<Node*> Quad::list() {
   std::list<Node*> nodeList;
 
   if (n != nullptr) {
-    nodeList.push_back(n);
+    nodeList.push_back(n); // Agrega el nodo actual a la lista
   }
 
+  // Realiza un recorrido recursivo en los cuadrantes hijos y agrega sus nodos a la lista
   if (topLeftTree != nullptr) {
     std::list<Node*> topLeftList = topLeftTree->list();
     nodeList.insert(nodeList.end(), topLeftList.begin(), topLeftList.end());
@@ -209,18 +220,22 @@ std::list<Node*> Quad::list() {
     std::list<Node*> botRightList = botRightTree->list();
     nodeList.insert(nodeList.end(), botRightList.begin(), botRightList.end());
   }
+
   return nodeList;
 }
 
+// Cuenta el número de nodos en el Quadtree que están dentro de un cuadrante dado por el punto p y la distancia d
 int Quad::countRegion(Point p, int d) {
   int count = 0;
 
   if (!inBoundary(p))
-    return count;
-  if (n != nullptr)
+    return count; // Si el punto p no está dentro del cuadrante actual, retorna 0
+
+  // Si el cuadrante actual es de tamaño unitario y contiene un nodo, verifica si está dentro del cuadrante dado por p y d
+  if (n != nullptr && (abs(p.x - n->point.x) <= d && abs(p.y - n->point.y) <= d))
     count++;
-  if (abs(topLeft.x - botRight.x) <= 1 && abs(topLeft.y - botRight.y) <= 1)
-    return count;
+
+  // Realiza un recorrido recursivo en los cuadrantes hijos y cuenta los nodos que están dentro del cuadrante dado
   if (topLeftTree != nullptr)
     count += topLeftTree->countRegion(p, d);
   if (topRightTree != nullptr)
@@ -229,25 +244,33 @@ int Quad::countRegion(Point p, int d) {
     count += botLeftTree->countRegion(p, d);
   if (botRightTree != nullptr)
     count += botRightTree->countRegion(p, d);
+
   return count;
 }
 
-int Quad::aggregateRegion(Point p, int d) {
-  int aggregate = 0;
+//
+//Metodos extras
+//
 
-  if (!inBoundary(p))
-    return aggregate;
-  if (n != nullptr)
-    aggregate += n->data;
-  if (abs(topLeft.x - botRight.x) <= 1 && abs(topLeft.y - botRight.y) <= 1)
-    return aggregate;
+// Elimina un nodo específico del Quadtree
+void Quad::remove(Point p) {
+  if (!inBoundary(p)) {
+    return; // El punto p no está dentro del cuadrante actual, no se puede eliminar
+  }
+
+  if (n != nullptr && n->pos == p) {
+    delete n; // Elimina el nodo actual si coincide con el punto p
+    n = nullptr;
+    return;
+  }
+
+  // Realiza una búsqueda recursiva en los cuadrantes hijos y elimina el nodo correspondiente
   if (topLeftTree != nullptr)
-    aggregate += topLeftTree->aggregateRegion(p, d);
+    topLeftTree->remove(p);
   if (topRightTree != nullptr)
-    aggregate += topRightTree->aggregateRegion(p, d);
+    topRightTree->remove(p);
   if (botLeftTree != nullptr)
-    aggregate += botLeftTree->aggregateRegion(p, d);
+    botLeftTree->remove(p);
   if (botRightTree != nullptr)
-    aggregate += botRightTree->aggregateRegion(p, d);
-  return aggregate;
+    botRightTree->remove(p);
 }

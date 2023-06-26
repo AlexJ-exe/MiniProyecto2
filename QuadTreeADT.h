@@ -15,10 +15,12 @@ class Quad {
 public:
     Quad();
     Quad(Point topL, Point botR);
+    ~Quad(); // Destructor
     int totalPoints();
     int totalNodes();
     void insert(Point p, int data);
     void insert(Node* node);
+    void remove(Point p); // Método de eliminación
     std::list<Node*> list();
     int countRegion(Point p, int d);
     int aggregateRegion(Point p, int d);
