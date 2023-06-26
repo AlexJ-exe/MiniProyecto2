@@ -14,8 +14,7 @@ class Quad {
 
 public:
     Quad();
-    Quad(Point topL, Point botR);
-    ~Quad(); // Destructor
+    Quad(Point topL, Point botR);    
     int totalPoints();
     int totalNodes();
     void insert(Point p, int data);
@@ -27,11 +26,8 @@ public:
     Node* search(Point p);
     bool inBoundary(Point p);
 
+
 private:
     void countPoints(int& count);
     void countNodes(int& count);
-    void countPointsInRegion(Point p, int d, int& count);
-    void calculateAggregate(Point p, int d, int& aggregate);
-    bool intersectsRegion(Point p, int d);
-    bool isPointInRegion(Point point, Point center, int d);
 };

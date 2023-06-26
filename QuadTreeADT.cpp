@@ -245,4 +245,24 @@ int Quad::countRegion(Point p, int d) {
   return count;
 }
 
+int Quad::aggregateRegion(Point p, int d) {
+  int aggregate = 0;
+
+  if (!inBoundary(p))
+    return aggregate;
+  if (n != nullptr)
+    aggregate += n->data;
+  if (abs(topLeft.x - botRight.x) <= 1 && abs(topLeft.y - botRight.y) <= 1)
+    return aggregate;
+  if (topLeftTree != nullptr)
+    aggregate += topLeftTree->aggregateRegion(p, d);
+  if (topRightTree != nullptr)
+    aggregate += topRightTree->aggregateRegion(p, d);
+  if (botLeftTree != nullptr)
+    aggregate += botLeftTree->aggregateRegion(p, d);
+  if (botRightTree != nullptr)
+    aggregate += botRightTree->aggregateRegion(p, d);
+  return aggregate;
+}
+
 
