@@ -229,13 +229,11 @@ int Quad::countRegion(Point p, int d) {
   int count = 0;
 
   if (!inBoundary(p))
-    return count; // Si el punto p no está dentro del cuadrante actual, retorna 0
-
-  // Si el cuadrante actual es de tamaño unitario y contiene un nodo, verifica si está dentro del cuadrante dado por p y d
-  if (n != nullptr && (abs(p.x - n->point.x) <= d && abs(p.y - n->point.y) <= d))
+    return count;
+  if (n != nullptr)
     count++;
-
-  // Realiza un recorrido recursivo en los cuadrantes hijos y cuenta los nodos que están dentro del cuadrante dado
+  if (abs(topLeft.x - botRight.x) <= 1 && abs(topLeft.y - botRight.y) <= 1)
+    return count;
   if (topLeftTree != nullptr)
     count += topLeftTree->countRegion(p, d);
   if (topRightTree != nullptr)
@@ -244,33 +242,7 @@ int Quad::countRegion(Point p, int d) {
     count += botLeftTree->countRegion(p, d);
   if (botRightTree != nullptr)
     count += botRightTree->countRegion(p, d);
-
   return count;
 }
 
-//
-//Metodos extras
-//
 
-// Elimina un nodo específico del Quadtree
-void Quad::remove(Point p) {
-  if (!inBoundary(p)) {
-    return; // El punto p no está dentro del cuadrante actual, no se puede eliminar
-  }
-
-  if (n != nullptr && n->pos == p) {
-    delete n; // Elimina el nodo actual si coincide con el punto p
-    n = nullptr;
-    return;
-  }
-
-  // Realiza una búsqueda recursiva en los cuadrantes hijos y elimina el nodo correspondiente
-  if (topLeftTree != nullptr)
-    topLeftTree->remove(p);
-  if (topRightTree != nullptr)
-    topRightTree->remove(p);
-  if (botLeftTree != nullptr)
-    botLeftTree->remove(p);
-  if (botRightTree != nullptr)
-    botRightTree->remove(p);
-}
