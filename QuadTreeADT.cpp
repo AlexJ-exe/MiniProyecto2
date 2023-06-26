@@ -1,6 +1,7 @@
 #include "QuadTreeADT.h"
 #include <cmath>
-#include <iostream>
+#include <vector>
+//#include <list>
 
 Quad::Quad() {
   topLeft = Point(0, 0);
@@ -166,19 +167,16 @@ void Quad::countPoints(int& count) {
     botRightTree->countPoints(count);
 }
 
-// Retorna el número total de nodos en el Quadtree, incluido el nodo raíz
 int Quad::totalNodes() {
-  int count = 1; // Comienza con 1 para incluir el nodo raíz
+  int count = 0;
   countNodes(count);
   return count;
 }
 
-// Cuenta recursivamente el número de nodos en el Quadtree, incluido el nodo actual
 void Quad::countNodes(int& count) {
-  if (n != nullptr)
-    count++; // Incrementa el contador cuando se encuentra un nodo en este cuadrante
+  count++; // Increment the counter for the current node (quadrant)
 
-  // Realiza un recorrido recursivo en los cuadrantes hijos
+  // Recursively traverse the child quadrants
   if (topLeftTree != nullptr)
     topLeftTree->countNodes(count);
   if (topRightTree != nullptr)
@@ -189,179 +187,112 @@ void Quad::countNodes(int& count) {
     botRightTree->countNodes(count);
 }
 
-// Inserta un punto y un dato en el Quadtree
-void Quad::insert(Point p, int data) {
-  Node* newNode = new Node(p, data);
-  insert(newNode);
-}
-
 // Retorna una lista que contiene todos los nodos almacenados en el Quadtree
-std::list<Node*> Quad::list() {
-  std::list<Node*> nodeList;
+std::list<std::pair<Point, int>> Quad::list() {
+  std::list<std::pair<Point, int>> result; // Contenedor para almacenar los puntos y sus valores asociados
 
-  if (n != nullptr) {
-    nodeList.push_back(n); // Agrega el nodo actual a la lista
-  }
+  // Llama a la función auxiliar para realizar un recorrido en preorden y poblar la lista de resultados
+  listHelper(result);
 
-  // Realiza un recorrido recursivo en los cuadrantes hijos y agrega sus nodos a la lista
-  if (topLeftTree != nullptr) {
-    std::list<Node*> topLeftList = topLeftTree->list();
-    nodeList.insert(nodeList.end(), topLeftList.begin(), topLeftList.end());
-  }
-  if (topRightTree != nullptr) {
-    std::list<Node*> topRightList = topRightTree->list();
-    nodeList.insert(nodeList.end(), topRightList.begin(), topRightList.end());
-  }
-  if (botLeftTree != nullptr) {
-    std::list<Node*> botLeftList = botLeftTree->list();
-    nodeList.insert(nodeList.end(), botLeftList.begin(), botLeftList.end());
-  }
-  if (botRightTree != nullptr) {
-    std::list<Node*> botRightList = botRightTree->list();
-    nodeList.insert(nodeList.end(), botRightList.begin(), botRightList.end());
-  }
-
-  return nodeList;
+  return result;
 }
 
-// Cuenta el número de nodos en el Quadtree que están dentro de un cuadrante dado por el punto p y la distancia d
+void Quad::listHelper(std::list<std::pair<Point, int>>& result) {
+  if (n != nullptr) {
+    // Agrega el punto actual y su valor asociado a la lista de resultados
+    result.push_back(std::make_pair(n->pos, n->data));
+  }
+
+  // Recorre recursivamente los cuadrantes hijos en preorden
+  if (topLeftTree != nullptr)
+    topLeftTree->listHelper(result);
+  if (topRightTree != nullptr)
+    topRightTree->listHelper(result);
+  if (botLeftTree != nullptr)
+    botLeftTree->listHelper(result);
+  if (botRightTree != nullptr)
+    botRightTree->listHelper(result);
+}
+
+// Retorna la cantidad de puntos en una región del plano
 int Quad::countRegion(Point p, int d) {
   int count = 0;
-  countNodesInRegion(p, d, count);
+  countRegionHelper(p, d, count);
   return count;
 }
 
-// Método auxiliar para contar los nodos en un cuadrante dado por el punto p y la distancia d
-void Quad::countNodesInRegion(Point p, int d, int& count) {
-  if (n != nullptr && inRegion(n->pos, p, d))
-    count++; // Incrementa el contador cuando se encuentra un nodo dentro del cuadrante
+// Función auxiliar para contar los puntos en una región del plano de forma recursiva
+void Quad::countRegionHelper(Point p, int d, int& count) {
+  // Verifica si el cuadrante actual tiene un nodo y si el punto está dentro de la región
+  if (n != nullptr && isWithinRegion(p, d, n->pos)) {
+    count++; // Incrementa el contador si el punto está dentro de la región
+  }
 
-  // Realiza un recorrido recursivo en los cuadrantes hijos que intersectan con el cuadrante dado
-  if (topLeftTree != nullptr && intersectRegion(topLeftTree->topLeft, topLeftTree->botRight, p, d))
-    topLeftTree->countNodesInRegion(p, d, count);
-  if (topRightTree != nullptr && intersectRegion(topRightTree->topLeft, topRightTree->botRight, p, d))
-    topRightTree->countNodesInRegion(p, d, count);
-  if (botLeftTree != nullptr && intersectRegion(botLeftTree->topLeft, botLeftTree->botRight, p, d))
-    botLeftTree->countNodesInRegion(p, d, count);
-  if (botRightTree != nullptr && intersectRegion(botRightTree->topLeft, botRightTree->botRight, p, d))
-    botRightTree->countNodesInRegion(p, d, count);
+  // Recorre recursivamente los cuadrantes hijos que intersectan con la región
+  if (topLeftTree != nullptr && intersectsRegion(p, d, topLeftTree->topLeft, topLeftTree->botRight)) {
+    topLeftTree->countRegionHelper(p, d, count);
+  }
+  if (topRightTree != nullptr && intersectsRegion(p, d, topRightTree->topLeft, topRightTree->botRight)) {
+    topRightTree->countRegionHelper(p, d, count);
+  }
+  if (botLeftTree != nullptr && intersectsRegion(p, d, botLeftTree->topLeft, botLeftTree->botRight)) {
+    botLeftTree->countRegionHelper(p, d, count);
+  }
+  if (botRightTree != nullptr && intersectsRegion(p, d, botRightTree->topLeft, botRightTree->botRight)) {
+    botRightTree->countRegionHelper(p, d, count);
+  }
 }
 
-// Verifica si un punto se encuentra dentro de un cuadrante dado por el punto central y la distancia
-bool Quad::inRegion(Point point, Point center, int distance) {
-  int dx = abs(point.x - center.x);
-  int dy = abs(point.y - center.y);
+// Retorna la población estimada dentro de una región del plano
+int Quad::aggregateRegion(Point p, int d) {
+  int aggregate = 0;
+  aggregateRegionHelper(p, d, aggregate);
+  return aggregate;
+}
+
+// Función auxiliar para estimar la población dentro de una región del plano de forma recursiva
+void Quad::aggregateRegionHelper(Point p, int d, int& aggregate) {
+  // Verifica si el cuadrante actual tiene un nodo y si el punto está dentro de la región
+  if (n != nullptr && isWithinRegion(p, d, n->pos)) {
+    aggregate += n->data; // Incrementa la población estimada si el punto está dentro de la región
+  }
+
+  // Recorre recursivamente los cuadrantes hijos que intersectan con la región
+  if (topLeftTree != nullptr && intersectsRegion(p, d, topLeftTree->topLeft, topLeftTree->botRight)) {
+    topLeftTree->aggregateRegionHelper(p, d, aggregate);
+  }
+  if (topRightTree != nullptr && intersectsRegion(p, d, topRightTree->topLeft, topRightTree->botRight)) {
+    topRightTree->aggregateRegionHelper(p, d, aggregate);
+  }
+  if (botLeftTree != nullptr && intersectsRegion(p, d, botLeftTree->topLeft, botLeftTree->botRight)) {
+    botLeftTree->aggregateRegionHelper(p, d, aggregate);
+  }
+  if (botRightTree != nullptr && intersectsRegion(p, d, botRightTree->topLeft, botRightTree->botRight)) {
+    botRightTree->aggregateRegionHelper(p, d, aggregate);
+  }
+}
+
+// Verifica si un punto está dentro de la región definida por un punto central y una distancia
+bool Quad::isWithinRegion(Point center, int distance, Point point) {
+  int dx = abs(center.x - point.x);
+  int dy = abs(center.y - point.y);
   return (dx <= distance && dy <= distance);
 }
 
-// Verifica si un cuadrante dado por los puntos topLeft1 y botRight1 intersecta con otro cuadrante dado por los puntos topLeft2 y botRight2
-bool Quad::intersectRegion(Point topLeft1, Point botRight1, Point topLeft2, Point botRight2) {
-  return !(topLeft1.x > botRight2.x || botRight1.x < topLeft2.x || topLeft1.y > botRight2.y || botRight1.y < topLeft2.y);
-}
+// Verifica si el cuadrante definido por su esquina superior izquierda y esquina inferior derecha
+// intersecta con la región definida por un punto central y una distancia
+bool Quad::intersectsRegion(Point center, int distance, Point topLeft, Point botRight) {
+  int dxCentre = abs(center.x - (topLeft.x + botRight.x) / 2);
+  int dyCentre = abs(center.y - (topLeft.y + botRight.y) / 2);
+  int dxRegion = abs((topLeft.x - botRight.x) / 2);
+  int dyRegion = abs((topLeft.y - botRight.y) / 2);
 
-// Calcula la suma de los datos de los nodos en el Quadtree que están dentro de un cuadrante dado por el punto p y la distancia d
-int Quad::aggregateRegion(Point p, int d) {
-  int sum = 0;
-  aggregateDataInRegion(p, d, sum);
-  return sum;
-}
+  int dx = dxCentre - dxRegion;
+  int dy = dyCentre - dyRegion;
 
-// Método auxiliar para sumar los datos de los nodos en un cuadrante dado por el punto p y la distancia d
-void Quad::aggregateDataInRegion(Point p, int d, int& sum) {
-  if (n != nullptr && inRegion(n->pos, p, d))
-    sum += n->data; // Agrega el dato del nodo al total
+  int distanceX = std::max(dx, 0);
+  int distanceY = std::max(dy, 0);
 
-  // Realiza un recorrido recursivo en los cuadrantes hijos que intersectan con el cuadrante dado
-  if (topLeftTree != nullptr && intersectRegion(topLeftTree->topLeft, topLeftTree->botRight, p, d))
-    topLeftTree->aggregateDataInRegion(p, d, sum);
-  if (topRightTree != nullptr && intersectRegion(topRightTree->topLeft, topRightTree->botRight, p, d))
-    topRightTree->aggregateDataInRegion(p, d, sum);
-  if (botLeftTree != nullptr && intersectRegion(botLeftTree->topLeft, botLeftTree->botRight, p, d))
-    botLeftTree->aggregateDataInRegion(p, d, sum);
-  if (botRightTree != nullptr && intersectRegion(botRightTree->topLeft, botRightTree->botRight, p, d))
-    botRightTree->aggregateDataInRegion(p, d, sum);
-}
-
-
-//Metodos extras                     hoñmafknafkñasfnasfnafdasnoanñan
-//
-
-
-// Elimina un nodo del Quadtree
-bool Quad::remove(Point p) {
-  return removeNode(p, *this);
-}
-
-// Método auxiliar para eliminar un nodo del Quadtree
-bool Quad::removeNode(Point p, Quad& quad) {
-  if (quad.n != nullptr && quad.n->pos == p) {
-    delete quad.n;
-    quad.n = nullptr;
-    return true;
-  }
-
-  if (quad.topLeftTree != nullptr && inBoundary(p, quad.topLeftTree)) {
-    bool removed = removeNode(p, *quad.topLeftTree);
-    if (removed)
-      return true;
-  }
-
-  if (quad.topRightTree != nullptr && inBoundary(p, quad.topRightTree)) {
-    bool removed = removeNode(p, *quad.topRightTree);
-    if (removed)
-      return true;
-  }
-
-  if (quad.botLeftTree != nullptr && inBoundary(p, quad.botLeftTree)) {
-    bool removed = removeNode(p, *quad.botLeftTree);
-    if (removed)
-      return true;
-  }
-
-  if (quad.botRightTree != nullptr && inBoundary(p, quad.botRightTree)) {
-    bool removed = removeNode(p, *quad.botRightTree);
-    if (removed)
-      return true;
-  }
-
-  return false;
-}
-
-//Verifica si un punto se encuentra dentro del cuadrante de un Quadtree dado
-bool Quad::inBoundary(Point p, Quad* quad) {
-  return (p.x >= quad->topLeft.x && p.x <= quad->botRight.x && p.y >= quad->topLeft.y && p.y <= quad->botRight.y);
-}
-
-// Busca todos los nodos dentro de una región dada por el punto p y la distancia d
-std::list<Node*> Quad::searchRegion(Point p, int d) {
-  std::list<Node*> nodes;
-  searchNodesInRegion(p, d, nodes);
-  return nodes;
-}
-
-// Método auxiliar para buscar los nodos dentro de una región dada por el punto p y la distancia d
-void Quad::searchNodesInRegion(Point p, int d, std::list<Node*>& nodes) {
-  if (n != nullptr && inRegion(n->pos, p, d))
-    nodes.push_back(n); // Agrega el nodo actual a la lista
-
-  // Realiza un recorrido recursivo en los cuadrantes hijos que intersectan con el cuadrante dado
-  if (topLeftTree != nullptr && intersectRegion(topLeftTree->topLeft, topLeftTree->botRight, p, d))
-    topLeftTree->searchNodesInRegion(p, d, nodes);
-  if (topRightTree != nullptr && intersectRegion(topRightTree->topLeft, topRightTree->botRight, p, d))
-    topRightTree->searchNodesInRegion(p, d, nodes);
-  if (botLeftTree != nullptr && intersectRegion(botLeftTree->topLeft, botLeftTree->botRight, p, d))
-    botLeftTree->searchNodesInRegion(p, d, nodes);
-  if (botRightTree != nullptr && intersectRegion(botRightTree->topLeft, botRightTree->botRight, p, d))
-    botRightTree->searchNodesInRegion(p, d, nodes);
-}
-
-// Elimina todos los nodos dentro de una región dada por el punto p y la distancia d
-void Quad::removeRegion(Point p, int d) {
-  std::list<Node*> nodesToRemove;
-  searchNodesInRegion(p, d, nodesToRemove);
-
-  for (Node* node : nodesToRemove) {
-    remove(node->pos);
-  }
+  return (distanceX <= distance && distanceY <= distance);
 }
 
