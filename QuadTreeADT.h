@@ -25,6 +25,10 @@ public:
     int aggregateRegion(Point p, int d);
     Node* search(Point p);
     bool inBoundary(Point p);
+    bool isEmpty();
+    void clear();
+    void remove(Point p);
+    void printAs2DPlane();
 
 
 private:

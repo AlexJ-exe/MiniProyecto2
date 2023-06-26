@@ -1,6 +1,7 @@
 #include "QuadTreeADT.h"
 #include <cmath>
 #include <vector>
+#include <iostream>
 //#include <list>
 
 Quad::Quad() {
@@ -295,4 +296,75 @@ bool Quad::intersectsRegion(Point center, int distance, Point topLeft, Point bot
 
   return (distanceX <= distance && distanceY <= distance);
 }
+
+void Quad::insert(Point p, int data) {
+  Node* newNode = new Node(p, data);
+  insert(newNode);
+}
+
+bool Quad::isEmpty() {
+  return (n == nullptr && topLeftTree == nullptr && topRightTree == nullptr && botLeftTree == nullptr && botRightTree == nullptr);
+}
+
+void Quad::clear() {
+  // Liberar la memoria de los nodos del QuadTree
+  delete n;
+  delete topLeftTree;
+  delete topRightTree;
+  delete botLeftTree;
+  delete botRightTree;
+
+  // Establecer los punteros de los nodos a nullptr
+  n = nullptr;
+  topLeftTree = nullptr;
+  topRightTree = nullptr;
+  botLeftTree = nullptr;
+  botRightTree = nullptr;
+}
+
+void Quad::remove(Point p) {
+  if (n != nullptr && n->pos == p) {
+    // Eliminar el nodo actual
+    delete n;
+    n = nullptr;
+    return;
+  }
+
+  // Buscar en los subárboles si el punto está presente
+  if (topLeftTree != nullptr && topLeftTree->inBoundary(p))
+    topLeftTree->remove(p);
+  if (topRightTree != nullptr && topRightTree->inBoundary(p))
+    topRightTree->remove(p);
+  if (botLeftTree != nullptr && botLeftTree->inBoundary(p))
+    botLeftTree->remove(p);
+  if (botRightTree != nullptr && botRightTree->inBoundary(p))
+    botRightTree->remove(p);
+}
+
+void Quad::printAs2DPlane() {
+  int minX = topLeft.x;
+  int maxX = botRight.x-1;
+  int minY = topLeft.y;
+  int maxY = botRight.y-1;
+
+  for (int y = maxY; y >= minY; y--) {
+    for (int x = minX; x <= maxX; x++) {
+      Point currentPoint(x, y);
+      Node* node = search(currentPoint);
+
+      if (node != nullptr) {
+        // Si el nodo existe en el QuadTree, imprimir su valor o representación en el plano
+        std::cout << node->data << " ";
+      } else {
+        // Si no hay un nodo en la posición actual, imprimir un carácter vacío o espacio en blanco
+        std::cout << ". ";
+      }
+    }
+    std::cout << std::endl;
+  }
+}
+
+
+
+
 

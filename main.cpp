@@ -4,7 +4,9 @@
 using namespace std;
 
 int main() {
+ 
  Quad plane2D(Point(0, 0), Point(8, 8));
+  
   Node p1(Point(0, 0), 5);
   Node p2(Point(0, 1), 4);
   Node p3(Point(1, 0), 2);
@@ -26,7 +28,6 @@ int main() {
 Point center(4, 2);
 int distance = 2;
 
-  
   cout << "Contenido en la coordenada (5,1): ";
   Node * p = plane2D.search(Point(5, 1));
   if(p != NULL) cout << p->data << endl;
@@ -55,7 +56,6 @@ int distance = 2;
     std::cout << "Point: (" << point.first.x << ", " << point.first.y << "), Value: " << point.second << std::endl;
   }
 
-
   //Prueba del método countRegion
   int count = plane2D.countRegion(center, distance);
   std::cout << "Number of points in the region: " << count << std::endl;
@@ -64,25 +64,46 @@ int distance = 2;
   int aggregate = plane2D.aggregateRegion(center, distance);
   std::cout << "Aggregate value in the region: " << aggregate << std::endl;
 
-  //Prueba del método remove
-  cout << "Removing point at (5, 1)..." << endl;
-  //plane2D.remove(Point(5, 1));
+  //Prueba insert
+  Point newPoint(2, 2);
+  int newData = 500;
+  plane2D.insert(newPoint, newData);
 
-  // Prueba del método searchRegion
+  cout<<"New point"<<endl;
+
+  std::list<std::pair<Point, int>> pointList2 = plane2D.list();
+
+  // Imprimir los puntos y sus valores asociados
+  for (const auto& point : pointList2) {
+    std::cout << "Point: (" << point.first.x << ", " << point.first.y << "), Value: " << point.second << std::endl;
+  }
+
+  plane2D.remove(newPoint);
+  cout<<"Removing point"<<endl;
+  std::list<std::pair<Point, int>> pointList3 = plane2D.list();
+  // Imprimir los puntos y sus valores asociados
+  for (const auto& point : pointList3) {
+    std::cout << "Point: (" << point.first.x << ", " << point.first.y << "), Value: " << point.second << std::endl;
+  }
+
+  //Empty
+  if(plane2D.isEmpty())
+  cout<<"Empty: YES"<<endl;
+  else
+    cout<<"Empty: NO"<<endl;
+
+  plane2D.printAs2DPlane();
+
+  plane2D.clear();
+
+  //Empty
+  if(plane2D.isEmpty())
+  cout<<"Empty: YES"<<endl;
+  else
+    cout<<"Empty: NO"<<endl;
+
+
   
-  /*cout << "Searching points in region with center (2, 2) and distance 3:" << endl;
-  list<Node*> regionPoints = plane2D.searchRegion(Point(2, 2), 3);
-  if (regionPoints.empty())
-      cout << "No points found in the region." << endl;
-  else {
-      for (const auto& node : regionPoints) {
-          Point point = node->pos;
-          int value = node->data;
-          cout << "Point (" << point.x << ", " << point.y << ") - Value: " << value << endl;
-      }
-  }*/
-
-  //remove region
 
   return 0;
 }
