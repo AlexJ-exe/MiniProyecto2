@@ -2,7 +2,6 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
-//#include <list>
 
 Quad::Quad() {
   topLeft = Point(0, 0);
@@ -363,8 +362,4 @@ void Quad::printAs2DPlane() {
     std::cout << std::endl;
   }
 }
-
-
-
-
 

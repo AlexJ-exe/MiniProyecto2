@@ -13,7 +13,7 @@ class Quad {
     Quad* botLeftTree;
     Quad* botRightTree;
 
-public:
+    public:
     Quad();
     Quad(Point topL, Point botR);    
     int totalPoints();
@@ -31,7 +31,7 @@ public:
     void printAs2DPlane();
 
 
-private:
+    private:
     void countPoints(int& count);
     void countNodes(int& count);
     void listHelper(std::list<std::pair<Point, int>>& result);
