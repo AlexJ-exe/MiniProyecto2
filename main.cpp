@@ -4,6 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <climits>
 
 #include "QuadTreeADT.h"
 
