@@ -79,5 +79,6 @@ int main(int argc, char *argv[]) {
         cnt++;
         plane.insert(n);
         std::cout << cnt << '\n';
+        if(n == 3173647) break;
     }
 }
