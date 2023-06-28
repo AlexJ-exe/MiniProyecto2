@@ -77,7 +77,8 @@ int main(int argc, char *argv[]) {
         Node *n = new Node(Point(lat2int, lon2int), std::stoi(data[4]));
         cnt++;
         plane.insert(n);
-        if(!(cnt % 100000)) std::cout << "Inserted " << cnt << '\n';
+        end = std::chrono::system_clock::now();
+        if(!(cnt % 100000)) std::cout << "Inserted " << cnt << ", took " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start) <<'\n';
         if(cnt == 3173647) break;
     }
     end = std::chrono::system_clock::now();
