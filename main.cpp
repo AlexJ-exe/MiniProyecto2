@@ -48,8 +48,8 @@ int main(int argc, char *argv[]) {
     std::string aux;
     std::getline(dataset, aux);
 
-    Point center(2,2);
-    int distance = 1000;
+    Point center(map_lat_to_int(36.8201f), map_lon_to_int(73.0444f));
+    int distance = INT_MAX / 16;
     
     
     
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
         
         int lat2int = map_lat_to_int(lat);
         int lon2int = map_lon_to_int(lon);
-        
+        /*
         std::cout << "Population: " << data[4]
                   << ", Latitude: " << lat
                   << ", Longitude: " << lon
@@ -77,14 +77,13 @@ int main(int argc, char *argv[]) {
         
         std::cout << "  Latitude2Int:  " << lat2int << " (err: " << map_lat_to_flt(lat2int) - lat << ", act: " << lats << ")\n"
                   << "  Longitude2Int: " << lon2int << " (err: " << map_lon_to_flt(lon2int) - lon << ", act: " << lons << ")\n";
-        
+        */
         Node *n = new Node(Point(lat2int, lon2int), std::stoi(data[4]));
         cnt++;
         plane.insert(n);
         //std::cout << cnt << '\n';
         if(cnt == 3173647) break;
-    }/*
-    //Prueba del método aggregateRegion
+    }
     //Prueba del método totalPoints
     std::cout << "Total Points test 2: "<< plane.totalPoints()<<std::endl;
 
@@ -94,11 +93,6 @@ int main(int argc, char *argv[]) {
     // Obtener la lista de puntos almacenados en el Quadtree
     std::list<std::pair<Point, int>> pointList = plane.list();
 
-    // Imprimir los puntos y sus valores asociados
-  for (const auto& point : pointList) {
-    std::cout << "Point: (" << point.first.x << ", " << point.first.y << "), Value: " << point.second << std::endl;
-  }
-
     //Prueba del método countRegion
     int count = plane.countRegion(center, distance);
     std::cout << "Number of points in the region: " << count << std::endl;
@@ -107,6 +101,4 @@ int main(int argc, char *argv[]) {
     int aggregate = plane.aggregateRegion(center, distance);
     std::cout << "Aggregate value in the region: " << aggregate << std::endl;
 
-  //plane.printAs2DPlane();
-  */
 }
