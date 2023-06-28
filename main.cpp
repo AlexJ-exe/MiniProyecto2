@@ -72,8 +72,8 @@ int main(int argc, char *argv[]) {
                   << ", Longitude: " << lon
                   << '\n';
         
-        std::cout << "  Latitude2Int:  " << lat2int << " (err: " << map_lat_to_flt(lat2int) - lat << ")\n"
-                  << "  Longitude2Int: " << lon2int << " (err: " << map_lon_to_flt(lon2int) - lon << ")\n";
+        std::cout << "  Latitude2Int:  " << lat2int << " (err: " << map_lat_to_flt(lat2int) - lat << ", act: " << lats << ")\n"
+                  << "  Longitude2Int: " << lon2int << " (err: " << map_lon_to_flt(lon2int) - lon << ", act: " << lons << ")\n";
         */
         Node *n = new Node(Point(lat2int, lon2int), std::stoi(data[4]));
         cnt++;
