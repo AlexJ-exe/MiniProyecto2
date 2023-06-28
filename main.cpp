@@ -44,6 +44,9 @@ std::vector<std::string> read_csv(std::istream &is) {
 }
 
 int main(int argc, char *argv[]) {
+    auto start = std::chrono::system_clock::now();
+    auto end = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     std::ifstream dataset("../dataset.csv");
     std::string aux;
     std::getline(dataset, aux);
@@ -55,6 +58,7 @@ int main(int argc, char *argv[]) {
     
     Quad plane(Point(-INT_MAX, -INT_MAX), Point(INT_MAX, INT_MAX));
     size_t cnt = 0;
+    start = std::chrono::system_clock::now();
     while(1) {
         std::vector<std::string> data = read_csv(dataset);
         
@@ -69,36 +73,40 @@ int main(int argc, char *argv[]) {
         
         int lat2int = map_lat_to_int(lat);
         int lon2int = map_lon_to_int(lon);
-        /*
-        std::cout << "Population: " << data[4]
-                  << ", Latitude: " << lat
-                  << ", Longitude: " << lon
-                  << '\n';
-        
-        std::cout << "  Latitude2Int:  " << lat2int << " (err: " << map_lat_to_flt(lat2int) - lat << ", act: " << lats << ")\n"
-                  << "  Longitude2Int: " << lon2int << " (err: " << map_lon_to_flt(lon2int) - lon << ", act: " << lons << ")\n";
-        */
+
         Node *n = new Node(Point(lat2int, lon2int), std::stoi(data[4]));
         cnt++;
         plane.insert(n);
-        //std::cout << cnt << '\n';
+        if(!(cnt % 100000)) std::cout << "Inserted " << cnt << '\n';
         if(cnt == 3173647) break;
     }
-    //Prueba del método totalPoints
-    std::cout << "Total Points test 2: "<< plane.totalPoints()<<std::endl;
+    end = std::chrono::system_clock::now();
+    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    
+    std::cout << "Inserted all nodes, t = " << elapsed.count() << '\n';
 
-    //Prueba del método totalNodes
-    std::cout << "Total Nodes test 1: "<< plane.totalNodes()<<std::endl;
-
-    // Obtener la lista de puntos almacenados en el Quadtree
-    std::list<std::pair<Point, int>> pointList = plane.list();
-
-    //Prueba del método countRegion
-    int count = plane.countRegion(center, distance);
-    std::cout << "Number of points in the region: " << count << std::endl;
-
-    //Prueba del método aggregateRegion
-    int aggregate = plane.aggregateRegion(center, distance);
-    std::cout << "Aggregate value in the region: " << aggregate << std::endl;
-
+    const size_t runs = 20;
+    std::cout << "Testing " << runs << " runs per task, and averaging...";
+    
+    size_t dists[] = { 51200, 102400, 204800, 409600, 819200, 1638400 };
+    
+   
+    
+    for(size_t dist_i = 0; dist_i < sizeof(dists); dist_i++) {
+        size_t avg = 0;
+        std::cout << "Test " << dist_i + 1 << " with distance " << dists[dist_i] << '\n';
+        for(size_t i = 0; i < runs; i++) {
+            start = std::chrono::system_clock::now();
+            
+            plane.aggregateRegion(center, dists[dist_i]);
+            
+            end = std::chrono::system_clock::now();
+            elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+            avg += elapsed.count();
+        }
+        avg /= runs;
+        
+        std::cout << "    Average: " << avg << '\n';
+    }
+    
 }
