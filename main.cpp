@@ -88,11 +88,11 @@ int main(int argc, char *argv[]) {
     const size_t runs = 20;
     std::cout << "Testing " << runs << " runs per task, and averaging...";
     
-    size_t dists[] = { 51200, 102400, 204800, 409600, 819200, 1638400 };
+    size_t dists[] = { 51200, 102400, 204800, 409600, 819200, 1638400, 3276800, 6553600, 13107200, 26214400, 52428800, 104857600 };
     
    
     
-    for(size_t dist_i = 0; dist_i < sizeof(dists); dist_i++) {
+    for(size_t dist_i = 0; dist_i < 12; dist_i++) {
         size_t avg = 0;
         std::cout << "Test " << dist_i + 1 << " with distance " << dists[dist_i] << '\n';
         for(size_t i = 0; i < runs; i++) {
