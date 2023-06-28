@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
         cnt++;
         plane.insert(n);
         end = std::chrono::system_clock::now();
-        if(!(cnt % 100000)) std::cout << "Inserted " << cnt << ", took " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start) <<'\n';
+        if(!(cnt % 100000)) std::cout << "Inserted " << cnt << ", took " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() <<'\n';
         if(cnt == 3173647) break;
     }
     end = std::chrono::system_clock::now();
