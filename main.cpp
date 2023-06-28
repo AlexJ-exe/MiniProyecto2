@@ -8,24 +8,24 @@
 
 #include "QuadTreeADT.h"
 
-#define LAT2INT ((double) (INT_MAX / 2) / 90.0f)
-#define LON2INT ((double) (INT_MAX / 2) / 180.0f)
+#define LAT2INT ((double) (INT_MAX / 4) / 180.0f)
+#define LON2INT ((double) (INT_MAX / 4) / 360.0f)
 
 
 int map_lat_to_int(float x) {
-    return x * LAT2INT;
+    return (x + 90.0f) * LAT2INT;
 }
 
 int map_lon_to_int(float x) {
-    return x * LON2INT;
+    return (x + 180.0f) * LON2INT;
 }
 
 float map_lat_to_flt(float x) {
-    return x / LAT2INT;
+    return (x / LAT2INT) - 90.0f;
 }
 
 float map_lon_to_flt(float x) {
-    return x / LON2INT;
+    return (x / LON2INT) - 180.0f;
 }
 
 
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
         
         int lat2int = map_lat_to_int(lat);
         int lon2int = map_lon_to_int(lon);
-        /*
+        
         std::cout << "Population: " << data[4]
                   << ", Latitude: " << lat
                   << ", Longitude: " << lon
@@ -77,13 +77,13 @@ int main(int argc, char *argv[]) {
         
         std::cout << "  Latitude2Int:  " << lat2int << " (err: " << map_lat_to_flt(lat2int) - lat << ", act: " << lats << ")\n"
                   << "  Longitude2Int: " << lon2int << " (err: " << map_lon_to_flt(lon2int) - lon << ", act: " << lons << ")\n";
-        */
+        
         Node *n = new Node(Point(lat2int, lon2int), std::stoi(data[4]));
         cnt++;
         plane.insert(n);
         //std::cout << cnt << '\n';
         if(cnt == 3173647) break;
-    }
+    }/*
     //Prueba del método aggregateRegion
     //Prueba del método totalPoints
     std::cout << "Total Points test 2: "<< plane.totalPoints()<<std::endl;
@@ -108,4 +108,5 @@ int main(int argc, char *argv[]) {
     std::cout << "Aggregate value in the region: " << aggregate << std::endl;
 
   //plane.printAs2DPlane();
+  */
 }
