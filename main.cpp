@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
    
     
     for(size_t dist_i = 0; dist_i < 12; dist_i++) {
-        size_t avg = 0;
+        double avg = 0;
         std::cout << "Test " << dist_i + 1 << " with distance " << dists[dist_i] << '\n';
         for(size_t i = 0; i < runs; i++) {
             start = std::chrono::system_clock::now();
