@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     std::string aux;
     std::getline(dataset, aux);
 
-    Point center(map_lat_to_int(36.8201f), map_lon_to_int(73.0444f));
+    Point center(map_lat_to_int(0.0f), map_lon_to_int(0.0f));
     int distance = INT_MAX / 16;
     
     
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
     const size_t runs = 20;
     std::cout << "Testing " << runs << " runs per task, and averaging...";
     
-    size_t dists[] = { 51200, 102400, 204800, 409600, 819200, 1638400, 3276800, 6553600, 13107200, 26214400, 52428800, 104857600 };
+    size_t dists[] = { 51200, 102400, 204800, 409600, 819200, 1638400, 3276800, 6553600, 13107200, 26214400, 52428800, 104857600, INT_MAX / 8 };
     
    
     
