@@ -47,6 +47,9 @@ int main(int argc, char *argv[]) {
     std::ifstream dataset("../dataset.csv");
     std::string aux;
     std::getline(dataset, aux);
+
+    Point center(2,2);
+    int distance = 1000;
     
     
     
@@ -78,7 +81,31 @@ int main(int argc, char *argv[]) {
         Node *n = new Node(Point(lat2int, lon2int), std::stoi(data[4]));
         cnt++;
         plane.insert(n);
-        std::cout << cnt << '\n';
+        //std::cout << cnt << '\n';
         if(cnt == 3173647) break;
     }
+    //Prueba del método aggregateRegion
+    //Prueba del método totalPoints
+    std::cout << "Total Points test 2: "<< plane.totalPoints()<<std::endl;
+
+    //Prueba del método totalNodes
+    std::cout << "Total Nodes test 1: "<< plane.totalNodes()<<std::endl;
+
+    // Obtener la lista de puntos almacenados en el Quadtree
+    std::list<std::pair<Point, int>> pointList = plane.list();
+
+    // Imprimir los puntos y sus valores asociados
+  for (const auto& point : pointList) {
+    std::cout << "Point: (" << point.first.x << ", " << point.first.y << "), Value: " << point.second << std::endl;
+  }
+
+    //Prueba del método countRegion
+    int count = plane.countRegion(center, distance);
+    std::cout << "Number of points in the region: " << count << std::endl;
+
+    //Prueba del método aggregateRegion
+    int aggregate = plane.aggregateRegion(center, distance);
+    std::cout << "Aggregate value in the region: " << aggregate << std::endl;
+
+  //plane.printAs2DPlane();
 }
